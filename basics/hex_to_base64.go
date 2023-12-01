@@ -15,7 +15,7 @@ Each digit in Base64 can have one of 64 values, encoding 6 bits of data. This
 results in a more compact representation than hexadecimal.
 */
 
-// convertHexToBase64 resolves the set 1 solution of convert hex to base64
+// convertHexToBase64 resolves the set 1 challenge 1: convert hex to base64
 // at https://cryptopals.com/sets/1/challenges/1. Takes a hexadecimal string input,
 // decodes it into bytes, and encodes it into a base64 string.
 func convertHexToBase64(input string) ([]byte, error) {

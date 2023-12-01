@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// fixedXOR resolves the set 1 solution of fixed xor
+// fixedXOR resolves the set 1 challenge 2: fixed xor
 // at https://cryptopals.com/sets/1/challenges/2. Takes two hexadecimal string input,
 // decodes it into bytes, and xor against each other, then encodes it into a hexadecimal string.
 func fixedXOR(input, xorInput string) ([]byte, error) {
@@ -21,11 +21,34 @@ func fixedXOR(input, xorInput string) ([]byte, error) {
 	return encodeHexBytes(res), nil
 }
 
-// xor runs the xor bitwise operator on the two input byte arrays
+// xor runs the xor bitwise operator on the two input byte arrays.
+// If both bytes input are of different length, will take the max length between
+// the two inputs, but assume that trailing 0 bytes will be truncated.
 func xor(a, b []byte) []byte {
-	c := make([]byte, len(a))
-	for i := range a {
+	n := len(a)
+	if len(b) > n {
+		n = len(b)
+	}
+	c := make([]byte, n)
+	for i := 0; i < len(a) && i < len(b); i++ {
 		c[i] = a[i] ^ b[i]
+	}
+	for i := len(b); i < len(a); i++ {
+		c[i] = a[i]
+	}
+	for i := len(a); i < len(b); i++ {
+		c[i] = b[i]
+	}
+	s := len(c)
+	for range c {
+		if s > 0 && c[s-1] == 0 {
+			s--
+		}
+	}
+	if s < len(c) {
+		dst := make([]byte, s)
+		copy(dst, c)
+		return dst
 	}
 	return c
 }
@@ -36,15 +59,17 @@ func xor(a, b []byte) []byte {
 func encodeHexBytes(src []byte) []byte {
 	dst := make([]byte, len(src)*2)
 	for i, b := range src {
-		hexChars := byteToHexChar(b)
-		dst[i*2] = hexChars[0]
-		dst[i*2+1] = hexChars[1]
+		hc := byteToHexChar(b)
+		dst[i*2] = hc[0]
+		dst[i*2+1] = hc[1]
 	}
 	return dst
 }
 
-// byteToHexChar converts a single byte to its hexadecimal character equivalent
+// hexChars defines the encoding table for hexadecimal.
+const hexChars = "0123456789abcdef"
+
+// byteToHexChar converts a single byte to its hexadecimal character equivalent.
 func byteToHexChar(c byte) []byte {
-	const hexChars = "0123456789abcdef"
 	return []byte{hexChars[c>>4], hexChars[c&0x0f]}
 }
