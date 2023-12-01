@@ -7,12 +7,12 @@ import (
 
 // findXORCipher resolves the set 1 challenge 3: single-byte XOR cipher
 // at https://cryptopals.com/sets/1/challenges/3. Takes an input and finds the
-// single-byte xor cipher determined by the scoring of the xor'ed result based on
+// single-byte XOR cipher determined by the scoring of the XOR'ed result based on
 // character frequency.
-func findXORCipher(input string) ([]byte, error) {
+func findXORCipher(input string) ([]byte, float64, error) {
 	o, err := decodeHex(input)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	fmt.Printf("decoded: %s\n", o)
 	var res []byte
@@ -30,8 +30,9 @@ func findXORCipher(input string) ([]byte, error) {
 		}
 		s = 0
 	}
-	fmt.Printf("%s\n", res)
-	return res, nil
+	fmt.Printf("decrypted: %s\n", res)
+	fmt.Printf("score: %f\n", score)
+	return res, score, nil
 }
 
 // englishness determines how likely a byte array is to be english based on
